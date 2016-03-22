@@ -1,0 +1,30 @@
+#map{
+	background: gray;
+	position: relative;
+	margin-left: auto;
+    margin-right: auto;
+}
+
+html{
+	background: gray;
+}
+
+svg{
+	position: absolute;
+}
+
+.box{
+	position: absolute;
+}
+.full{
+	background: gray
+}
+
+.empty{
+	background: white
+}
+
+.monster{
+	background: red
+}
+
