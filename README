@@ -1,0 +1,2 @@
+//TO DO
+update map when bot moved because if not a bot could no over its first location because map[x][y] == 2

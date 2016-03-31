@@ -27,12 +27,11 @@ var Map = function(){
 		        	width : _this.cell_size+"px",
 		        	height : _this.cell_size+"px",
 		        })
-		        if(col == 0){
+		        // .html(col)
+		        if((col == 0)||(col == 2)){
 		        	box.addClass("box empty")
 		        }else if(col == 1){
 		        	box.addClass("box full")
-		        }else if(col == 2){
-		        	box.addClass("box monster")
 		        }
 		        $(_this.el).append(box)
 				boxes.push(box)

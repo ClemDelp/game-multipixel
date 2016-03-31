@@ -7,10 +7,15 @@
 		<script src="/socket.io/socket.io.js"></script>
 	</head>
 	<body>
+		<b id="user_id"></b>
 		<div id="map"></div>
 		<script src="jquery.js"></script>
 		<script src="mapClient.js"></script>
+		<script src="botClient.js"></script>
+		<script src="keypress.js"></script>
 		<script type="text/javascript">
+			var user = {}
+			var bots = []
 			var url = "https://poichigeon.snips.net"
 		    if(window.location.hostname == "localhost") url = "http://localhost:4000"
 			var map_width = 800//window.innerWidth
@@ -21,14 +26,20 @@
 			$('#map').css("height",map_height+"px")
 			$('#map').css("margin-top",margin_top+"px")
 			
-			// m.placeMonsters()
 			// set socket on /dashboard
 	      	var socket = io(url+'/client');
 	      	// wait for connection
 	      	socket.on('connect', function() {
-	      		console.log('connect with the server')
+	      		console.log('connect to the server')
 	      	});
-	      	socket.on('init-map', function(matrix) {
+	      	socket.on('init-map', function(json) {
+	      		user = new User().init(json.user).listenKeyboard().render()
+	      		user.socket = socket
+	      		$("#user_id").html("user id :"+user.id);
+	      		var matrix = json.map 
+	      		json.bots.forEach(function(bot){
+	      			bots.push(new Bot().init(bot).render())
+	      		})
 	      		var map = new Map()
 	      		map.init({
 	      			"map_width" : map_width,
@@ -39,6 +50,18 @@
 	        	// when link etablish with server on /dashboard socket update status of this dahoboard
 	        	
 	      	});
+	      	socket.on('bob-updated', function(bob) {
+	      		// console.log("bob",bob.id,' : ',bob.orientation)
+	      		bots.forEach(function(bot){
+	      			if(bot.id == bob.id){
+	      				bot.update(bob)
+	      			}
+	      		})
+	        	
+	      	});
+
+	      	
+
 
 	      	
 		</script>

@@ -25,6 +25,16 @@ svg{
 }
 
 .monster{
-	background: red
+	/*background: red;*/
+	z-index: 10;
+}
+.user{
+	/*background: green;*/
+	z-index: 10;
 }
 
+#user_id{
+	position: absolute;
+	top: 0px;
+
+}
