@@ -10,26 +10,6 @@ var Bot = require('./bot.js')
 var sendFileOpts = { root: path.join(path.dirname(__filename), 'www') }
 app.use(express.static(__dirname + '/www'));
 // ----------------------------------------
-// VARIABLE
-var gid = 1;
-
-var User = function(socket) {
-  this.id = gid++;
-  this.color= "blue";
-  this.name = 'Unknown User';
-	this.socket = socket;
-  this.x = 0;
-  this.y = 0;
-};
-User.prototype = new Bot;
-
-var users = []; 
-var map = new Map()
-var map_width = 800//window.innerWidth
-var map_height = 500//window.innerHeight
-map.init(map_width,map_height)
-
-// ----------------------------------------
 var Event = function() {
   var listeners = [];
 
@@ -50,11 +30,36 @@ var Event = function() {
     };
   }
 };
+// ----------------------------------------
+// VARIABLE
+var gid = 1;
+
+var users = []; 
+var map = new Map()
+var map_width = 800//window.innerWidth
+var map_height = 500//window.innerHeight
+map.init(map_width,map_height)
+
 // A bob can be a user/monster/... all elements who can moving and interact with map and others bob
 var bob_added = new Event();
 var bob_updated = new Event();
 var bob_removed = new Event();
 var map_updated = new Event();
+
+var User = function(socket) {
+  this.id = gid++;
+  this.color= "blue";
+  this.name = 'Unknown User';
+  this.type = "user"
+	this.socket = socket;
+  this.x = 0;
+  this.y = 0;
+  this.map = map;
+  this.bob_updated = bob_updated
+  return this
+};
+User.prototype = new Bot;
+
 // ----------------------------------------
 var createBots = function(nbr,map,socket){
   var bots = []
@@ -90,7 +95,6 @@ app.get('/', function(req, res) {
 
 io.of('client').on('connection', function(socket) {
   var user = new User(socket);
-  console.log('New user connected : ',user.id);
   users.push(user);
   // dispatch the new user to all listeners
   // bob_added.dispatch(user);
@@ -108,10 +112,6 @@ io.of('client').on('connection', function(socket) {
     socket.emit('bob-updated', bob);
   }));
 
-  // registeredEvents.push(bob_updated.listen(function(bob) {
-  //   socket.emit('bob-updated', bob);
-  // }));
-
   // registeredEvents.push(bob_removed.listen(function(bob) {
   //   socket.emit('bob-removed', bob);
   // }));
@@ -123,10 +123,10 @@ io.of('client').on('connection', function(socket) {
   // // USER EVENT
   // // -------------------------------
   socket.on('want-update-position', function(direction) {
-    console.log(user.name+' change to update his position to ' + direction);
     // user.name = name;
     // dispatch information
     // bob_updated.dispatch(user)
+    user[direction]()
   });
 
   // socket.on('change-my-position', function(position) {

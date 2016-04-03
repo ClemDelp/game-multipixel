@@ -10,6 +10,7 @@ var exports = module.exports = function(){
 	this.map = []
 	this.color = "green"
 	this.deplacement = ["down","right","up","left"]
+	this.type = "bot"
 	this.init = function(json){
 		this.bot_size = json.cell_size
 		this.id = json.id
@@ -33,8 +34,6 @@ var exports = module.exports = function(){
 				if(i>4) break;
 			}
 
-			_this.bob_updated.dispatch(_this.getModel())
-
 		},1000)
 		return this
 	}
@@ -46,6 +45,7 @@ var exports = module.exports = function(){
 			// vers le sud
 			this.orientation = "down"
 			this.y++
+			this.bob_updated.dispatch(this.getModel())
 			return true
 		}else{
 			return false
@@ -58,6 +58,8 @@ var exports = module.exports = function(){
 			// vers l'est
 			this.orientation = "right"
 			this.x++
+			this.bob_updated.dispatch(this.getModel())
+
 			return true
 		}else{
 			return false
@@ -70,6 +72,7 @@ var exports = module.exports = function(){
 			// vers le nord
 			this.orientation = "up"
 			this.y--
+			this.bob_updated.dispatch(this.getModel())
 			return true
 		}else{
 			return false
@@ -82,6 +85,7 @@ var exports = module.exports = function(){
 			// vers l'ouest
 			this.orientation = "left"
 			this.x--
+			this.bob_updated.dispatch(this.getModel())
 			return true
 		}else{
 			return false
@@ -95,7 +99,8 @@ var exports = module.exports = function(){
 			y : this.y,
 			orientation : this.orientation,
 			size : this.bot_size,
-			color : this.color
+			color : this.color,
+			type : this.type
 		}
 	}
 }

@@ -53,19 +53,15 @@ var User = function(){
 	this.listenKeyboard = function(){
 		// ------------------
       	this.listener.simple_combo("q", function() {
-		    console.log("left");
 		    this.socket.emit("want-update-position","left")
 		});
 		this.listener.simple_combo("d", function() {
-		    console.log("right");
 		    this.socket.emit("want-update-position","right")
 		});
 		this.listener.simple_combo("z", function() {
-		    console.log("up");
 		    this.socket.emit("want-update-position","up")
 		});
 		this.listener.simple_combo("s", function() {
-		    console.log("down");
 		    this.socket.emit("want-update-position","down")
 		});
 		// ------------------

@@ -51,6 +51,7 @@
 	        	
 	      	});
 	      	socket.on('bob-updated', function(bob) {
+	      		if(bob.type == "user") console.log('user moved')
 	      		// console.log("bob",bob.id,' : ',bob.orientation)
 	      		bots.forEach(function(bot){
 	      			if(bot.id == bob.id){
