@@ -61,26 +61,34 @@ var User = function(socket) {
 User.prototype = new Bot;
 
 // ----------------------------------------
+var getFreePlace = function(){
+  var x = 0
+  var y = 0
+  while(map.matrix[y][x] != 0){
+    x = Math.round(Math.random()*map.cols)
+    if(x == map.cols) x--
+    y = Math.round(Math.random()*map.rows)
+    if(y==map.rows) y--
+  }
+  map.matrix[y][x] = 2
+  return {
+    x : x,
+    y : y
+  }
+}
 var createBots = function(nbr,map,socket){
   var bots = []
   for(var i=0; i<nbr;i++){
-      var x = 0
-      var y = 0
-      while(map.matrix[y][x] != 0){
-        x = Math.round(Math.random()*map.cols)
-        if(x == map.cols) x--
-        y = Math.round(Math.random()*map.rows)
-        if(y==map.rows) y--
-      }
+      var position = getFreePlace()
       bots.push(new Bot().init({
         cell_size : map.cell_size,
         id : i+"_bot",
         map : map,
-        x : x,
-        y : y,
+        x : position.x,
+        y : position.y,
         bob_updated : bob_updated
       }).move().getModel())
-      map.matrix[y][x] = 2
+      
     }
     return bots
 }
@@ -95,7 +103,12 @@ app.get('/', function(req, res) {
 
 io.of('client').on('connection', function(socket) {
   var user = new User(socket);
+  var position = getFreePlace()
+  user.x = position.x
+  user.y = position.y
+
   users.push(user);
+  bots.push(user.getModel())
   // dispatch the new user to all listeners
   // bob_added.dispatch(user);
   socket.emit('init-map', {

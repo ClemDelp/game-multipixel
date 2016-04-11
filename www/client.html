@@ -35,6 +35,7 @@
 	      	socket.on('init-map', function(json) {
 	      		user = new User().init(json.user).listenKeyboard().render()
 	      		user.socket = socket
+	      		bots.push(user)
 	      		$("#user_id").html("user id :"+user.id);
 	      		var matrix = json.map 
 	      		json.bots.forEach(function(bot){
