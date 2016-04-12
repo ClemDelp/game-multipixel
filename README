@@ -2,3 +2,5 @@
 - update map when bot moved because if not a bot could no over its first location because map[x][y] == 2
 - replace users by bots remove with indexOf bots not users disconnect
 - globaly replace users by bots
+- replace bot by bob
+- fix ID uniq client & server side

@@ -6,7 +6,7 @@ var Bot = function(){
 	this.orientation = "s"
 	this.size = 0
 	this.color = "red"
-	this.init = function(json){
+	this.create = function(json){
 		this.color = json.color
 		this.id = json.id
 		this.x = json.x
@@ -29,6 +29,11 @@ var Bot = function(){
 			// Animation complete.
 		});
 		$('#'+this.id).html(this.orientation)
+	}
+	this.remove = function(){
+		console.log(this.id)
+		$('#'+this.id).remove()
+		delete this
 	}
 	this.render = function(){
 		var box = $('<span>')

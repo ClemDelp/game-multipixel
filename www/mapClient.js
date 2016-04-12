@@ -19,7 +19,7 @@ var Map = function(){
 		$.each(this.matrix,function(i,row){
 			$.each(row,function(ii,col){
 				var box = $('<span>')
-		        .attr("id",i*ii)
+		        .attr("class",i*ii)
 		        box.css({ 
 		        	display:"none",
 		        	top : i*_this.cell_size,

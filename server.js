@@ -1,4 +1,5 @@
 var express = require('express')
+var _ = require('lodash')
 var app = express()
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -33,8 +34,6 @@ var Event = function() {
 // ----------------------------------------
 // VARIABLE
 var gid = 1;
-
-var users = []; 
 var map = new Map()
 var map_width = 800//window.innerWidth
 var map_height = 500//window.innerHeight
@@ -45,21 +44,6 @@ var bob_added = new Event();
 var bob_updated = new Event();
 var bob_removed = new Event();
 var map_updated = new Event();
-
-var User = function(socket) {
-  this.id = gid++;
-  this.color= "blue";
-  this.name = 'Unknown User';
-  this.type = "user"
-	this.socket = socket;
-  this.x = 0;
-  this.y = 0;
-  this.map = map;
-  this.bob_updated = bob_updated
-  return this
-};
-User.prototype = new Bot;
-
 // ----------------------------------------
 var getFreePlace = function(){
   var x = 0
@@ -76,24 +60,38 @@ var getFreePlace = function(){
     y : y
   }
 }
+
 var createBots = function(nbr,map,socket){
   var bots = []
   for(var i=0; i<nbr;i++){
-      var position = getFreePlace()
-      bots.push(new Bot().init({
-        cell_size : map.cell_size,
-        id : i+"_bot",
-        map : map,
-        x : position.x,
-        y : position.y,
-        bob_updated : bob_updated
-      }).move().getModel())
-      
-    }
-    return bots
+    var position = getFreePlace()
+    bots.push(new Bot().init({
+      cell_size : map.cell_size,
+      id : i+"_bot",
+      map : map,
+      x : position.x,
+      y : position.y,
+      bob_updated : bob_updated
+    }).move().getModel())
+  }
+  return bots
 }
 // create bots
 var bots = createBots(10,map,bob_updated)
+// ----------------------------------------
+var User = function(socket) {
+  this.id = gid++;
+  this.color= "blue";
+  this.name = 'Unknown User';
+  this.type = "user"
+  this.socket = socket;
+  this.x = 0;
+  this.y = 0;
+  this.map = map;
+  this.bob_updated = bob_updated
+  return this
+};
+User.prototype = new Bot;
 // ----------------------------------------
 // Client
 // ----------------------------------------
@@ -107,10 +105,12 @@ io.of('client').on('connection', function(socket) {
   user.x = position.x
   user.y = position.y
 
-  users.push(user);
+  // users.push(user);
   bots.push(user.getModel())
+
   // dispatch the new user to all listeners
-  // bob_added.dispatch(user);
+  bob_added.dispatch(user.getModel());
+  
   socket.emit('init-map', {
     user: user.getModel(),
     map : map.matrix,
@@ -125,9 +125,13 @@ io.of('client').on('connection', function(socket) {
     socket.emit('bob-updated', bob);
   }));
 
-  // registeredEvents.push(bob_removed.listen(function(bob) {
-  //   socket.emit('bob-removed', bob);
-  // }));
+  registeredEvents.push(bob_added.listen(function(bot) {
+    socket.emit('bob-added', bot);
+  }));
+
+  registeredEvents.push(bob_removed.listen(function(bob) {
+    socket.emit('bob-removed', bob);
+  }));
 
   // registeredEvents.push(map_updated.listen(function(map) {
   //   socket.emit('map-updated', map);
@@ -155,11 +159,10 @@ io.of('client').on('connection', function(socket) {
     // call the callback to unregister user from all his registred events
     registeredEvents.forEach(function (unregister) { unregister() });
     // dispatch the removed bob to all listeners
-    bob_removed.dispatch(user);
-    var index = users.indexOf(user);
-    if (index > -1) {
-    	users.splice(index, 1);
-    }
+    bob_removed.dispatch(user.getModel());
+    bots = _.filter(bots, function(bot) { 
+      if(bot.id != user.id) return bot; 
+    });
   });
   
 });

@@ -5,6 +5,8 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 		<link rel="stylesheet" href="map.css">
 		<script src="/socket.io/socket.io.js"></script>
+		<script src="lodash.js"></script>
+
 	</head>
 	<body>
 		<b id="user_id"></b>
@@ -28,18 +30,20 @@
 			
 			// set socket on /dashboard
 	      	var socket = io(url+'/client');
+	      	// ---------------------------------------
 	      	// wait for connection
 	      	socket.on('connect', function() {
 	      		console.log('connect to the server')
 	      	});
+	      	// ---------------------------------------
 	      	socket.on('init-map', function(json) {
-	      		user = new User().init(json.user).listenKeyboard().render()
+	      		user = new User().create(json.user).listenKeyboard().render()
 	      		user.socket = socket
 	      		bots.push(user)
 	      		$("#user_id").html("user id :"+user.id);
 	      		var matrix = json.map 
 	      		json.bots.forEach(function(bot){
-	      			bots.push(new Bot().init(bot).render())
+	      			bots.push(new Bot().create(bot).render())
 	      		})
 	      		var map = new Map()
 	      		map.init({
@@ -51,6 +55,7 @@
 	        	// when link etablish with server on /dashboard socket update status of this dahoboard
 	        	
 	      	});
+	      	// ---------------------------------------
 	      	socket.on('bob-updated', function(bob) {
 	      		if(bob.type == "user") console.log('user moved')
 	      		// console.log("bob",bob.id,' : ',bob.orientation)
@@ -59,7 +64,23 @@
 	      				bot.update(bob)
 	      			}
 	      		})
-	        	
+	      	});
+	      	// ---------------------------------------
+	      	socket.on('bob-added', function(bot){
+	      		console.log("new bob")
+	      		bots.push(new Bot().create(bot).render())
+	      	});
+	      	// ---------------------------------------
+	      	socket.on('bob-removed', function(bob){
+	      		console.log("bob removed")
+	      		var toRemove = {}
+	      		bots = _.filter(bots, function(bot) { 
+			      if(bot.id != bob.id) return bot;
+			      else bot.remove()
+			    });
+			    console.log(bots.length)
+	      		// find bob on bots array and call bob.remove()
+	      		// remove from array and remove form dom
 	      	});
 
 	      	
