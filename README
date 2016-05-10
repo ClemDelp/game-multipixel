@@ -4,3 +4,4 @@
 - globaly replace users by bots
 - replace bot by bob
 - fix ID uniq client & server side
+- create a matric_ground, matrix_bots, and update matric_bots when a bot is moving

@@ -19,7 +19,8 @@ var Map = function(){
 		$.each(this.matrix,function(i,row){
 			$.each(row,function(ii,col){
 				var box = $('<span>')
-		        .attr("class",i*ii)
+				.attr("id",col.id)
+		        // .attr("class",col.id)
 		        box.css({ 
 		        	display:"none",
 		        	top : i*_this.cell_size,
@@ -28,9 +29,10 @@ var Map = function(){
 		        	height : _this.cell_size+"px",
 		        })
 		        // .html(col)
-		        if((col == 0)||(col == 2)){
+		        // if((col.val == 0)||(col.val == 2)){
+		        if(col.val != 1){
 		        	box.addClass("box empty")
-		        }else if(col == 1){
+		        }else if(col.val == 1){
 		        	box.addClass("box full")
 		        }
 		        $(_this.el).append(box)

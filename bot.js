@@ -1,3 +1,5 @@
+var utils = require('./utils.js')
+
 var exports = module.exports = function(){
 	this.x = 0
 	this.y = 0
@@ -41,11 +43,14 @@ var exports = module.exports = function(){
 	this.down = function(){
 		var x = this.x
 		var y = this.y
-		if((y+1<this.map.rows)&&(this.map.matrix[y+1][x] == 0)){
+		if((y+1<this.map.rows)&&(this.map.matrix[y+1][x].val == 0)){
 			// vers le sud
+			var from = {x:x,y:y}
 			this.orientation = "down"
 			this.y++
+			var to = {x:this.x,y:this.y}
 			this.bob_updated.dispatch(this.getModel())
+			this.map.moveBot(from,to)
 			return true
 		}else{
 			return false
@@ -54,11 +59,14 @@ var exports = module.exports = function(){
 	this.right = function(){
 		var x = this.x
 		var y = this.y
-		if((x+1<this.map.cols)&&(this.map.matrix[y][x+1] == 0)){
+		if((x+1<this.map.cols)&&(this.map.matrix[y][x+1].val == 0)){
 			// vers l'est
+			var from = {x:x,y:y}
 			this.orientation = "right"
 			this.x++
+			var to = {x:this.x,y:this.y}
 			this.bob_updated.dispatch(this.getModel())
+			this.map.moveBot(from,to)
 
 			return true
 		}else{
@@ -68,11 +76,14 @@ var exports = module.exports = function(){
 	this.up = function(){
 		var x = this.x
 		var y = this.y
-		if((y-1>0)&&(this.map.matrix[y-1][x] == 0)){
+		if((y-1>0)&&(this.map.matrix[y-1][x].val == 0)){
 			// vers le nord
+			var from = {x:x,y:y}
 			this.orientation = "up"
 			this.y--
+			var to = {x:this.x,y:this.y}
 			this.bob_updated.dispatch(this.getModel())
+			this.map.moveBot(from,to)
 			return true
 		}else{
 			return false
@@ -81,11 +92,14 @@ var exports = module.exports = function(){
 	this.left = function(){
 		var x = this.x
 		var y = this.y
-		if((x-1>0)&&(this.map.matrix[y][x-1] == 0)){
+		if((x-1>0)&&(this.map.matrix[y][x-1].val == 0)){
 			// vers l'ouest
+			var from = {x:x,y:y}
 			this.orientation = "left"
 			this.x--
+			var to = {x:this.x,y:this.y}
 			this.bob_updated.dispatch(this.getModel())
+			this.map.moveBot(from,to)
 			return true
 		}else{
 			return false

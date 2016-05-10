@@ -6,18 +6,20 @@ var Bot = function(){
 	this.orientation = "s"
 	this.size = 0
 	this.color = "red"
+	this.type = ""
 	this.create = function(json){
 		this.color = json.color
 		this.id = json.id
 		this.x = json.x
 		this.y = json.y
+		this.type = json.type
 		this.orientation = json.orientation
 		this.size = json.size
 		return this;
 	}
 	this.update = function(json){
 		var _this = this
-		this.id = json.id
+		// this.id = json.id
 		this.x = json.x
 		this.y = json.y
 		this.orientation = json.orientation
@@ -25,7 +27,7 @@ var Bot = function(){
 		$('#'+this.id).animate({
 			left: this.x*this.size,
 			top: this.y*this.size
-		}, 1000, function() {
+		}, 100, function() {
 			// Animation complete.
 		});
 		$('#'+this.id).html(this.orientation)
@@ -36,8 +38,10 @@ var Bot = function(){
 		delete this
 	}
 	this.render = function(){
+		if(this.type == "user") console.log(this.id)
 		var box = $('<span>')
         .attr("id",this.id)
+        .attr("class",this.id)
         box.css({ 
         	top : this.y*this.size,
         	left : this.x*this.size,
@@ -52,9 +56,7 @@ var Bot = function(){
 }
 
 var User = function(){
-
 	this.listener = new window.keypress.Listener();
-
 	this.listenKeyboard = function(){
 		// ------------------
       	this.listener.simple_combo("q", function() {

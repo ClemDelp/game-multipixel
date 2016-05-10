@@ -37,13 +37,24 @@
 	      	});
 	      	// ---------------------------------------
 	      	socket.on('init-map', function(json) {
-	      		user = new User().create(json.user).listenKeyboard().render()
-	      		user.socket = socket
-	      		bots.push(user)
-	      		$("#user_id").html("user id :"+user.id);
+	      		// user = new User().create(json.user).listenKeyboard().render()
+	      		// 
+	      		// bots.push(user)
+	      		
 	      		var matrix = json.map 
+	      		console.log(json.bots)
+
 	      		json.bots.forEach(function(bot){
-	      			bots.push(new Bot().create(bot).render())
+	      			if(bot.type == "user"){
+	      				bot = new User().create(bot).listenKeyboard().render()
+	      				bot.socket = socket
+	      				$("#user_id").html("user id :"+bot.id);
+	      				bots.push(bot)
+	      			}else if(bot.type == "bot"){
+	      				bot = new Bot().create(bot).render()	
+	      				bots.push(bot)
+	      			}
+	      			
 	      		})
 	      		var map = new Map()
 	      		map.init({

@@ -1,11 +1,5 @@
+var utils = require('./utils.js')
 
-// function svgRec(x,y,w,h){
-// 	return [
-// 	'<svg width="'+map_width+'" height="'+h+'" version="1.1" xmlns="http://www.w3.org/2000/svg">',
-// 		'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" stroke="blue"/>',
-// 	'</svg>'
-// 	].join('')
-// }
 var exports = module.exports = function(){
 	this.el = "#map"
 	this.cell_size = 20
@@ -19,19 +13,39 @@ var exports = module.exports = function(){
 		for(var i=0; i<this.rows;i++){
 			var row = []
 			for(var ii=0; ii<this.cols;ii++){
-				if(Math.random()*10%2>1){
-		        	row.push(1)
-		        }else{
-		        	row.push(0)
-		        }	
+				var val = 0
+				if(Math.random()*10%2>1) val = 1
+				var el = {
+					id : utils.guid(),
+					val : val
+				}
+				row.push(el)
 			}
 			this.matrix.push(row)
 		}
 	}
-	this.consoleMap = function(){
-		this.matrix.forEach(function(row){
-			console.log(row)
-		})
+	this.addNewBotOnMap = function(val,position){
+		this.matrix[position.y][position.x].val = 2
+		return this.matrix
 	}
-	
+	// ONLY USED TO UPDATE MAP FOR POTENTIAL NEW PLAYER
+	this.moveBot = function(from,to){
+		this.matrix[from.y][from.x].val = 0
+		this.matrix[to.y][to.x].val = 2
+	}
+	this.getFreePlaceOnMap = function(){
+	    var x = 0
+	    var y = 0
+	    while(this.matrix[y][x].val != 0){
+	      x = Math.round(Math.random()*this.cols)
+	      if(x == this.cols) x--
+	      y = Math.round(Math.random()*this.rows)
+	      if(y==this.rows) y--
+	    }
+	    
+	    return {
+	      x : x,
+	      y : y
+	    }
+	}
 }
