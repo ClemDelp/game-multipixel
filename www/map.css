@@ -1,12 +1,12 @@
 #map{
-	background: gray;
+	background: #3498db;
 	position: relative;
 	margin-left: auto;
     margin-right: auto;
 }
 
 html{
-	background: gray;
+	background: #3498db;
 }
 
 svg{
@@ -17,24 +17,22 @@ svg{
 	position: absolute;
 }
 .full{
-	background: gray
+	background: #3498db
 }
 
 .empty{
-	background: white
+	background: #ecf0f1
 }
 
 .monster{
-	/*background: red;*/
 	z-index: 10;
 }
 .user{
-	/*background: green;*/
 	z-index: 10;
 }
 
 #user_id{
 	position: absolute;
 	top: 0px;
-
+	color: white;
 }

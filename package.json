@@ -1,7 +1,7 @@
 {
-  "name": "pacman",
+  "name": "mutlipixel",
   "version": "1.0.0",
-  "description": "pacman mmo",
+  "description": "game multipixel",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

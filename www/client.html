@@ -6,7 +6,6 @@
 		<link rel="stylesheet" href="map.css">
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="lodash.js"></script>
-
 	</head>
 	<body>
 		<b id="user_id"></b>
@@ -18,86 +17,64 @@
 		<script type="text/javascript">
 			var user = {}
 			var bots = []
-			var url = "https://poichigeon.snips.net"
-		    if(window.location.hostname == "localhost") url = "http://localhost:4000"
-			var map_width = 800//window.innerWidth
-			var map_height = 500//window.innerHeight
-			// var cell_size = 20
+			var url = "http://192.168.0.16:4000" // production url
+		    if(window.location.hostname == "localhost") url = "http://localhost:4000" // dev url
+			var map_width = 800 // window.innerWidth
+			var map_height = 500 // window.innerHeight
 			var margin_top = (window.innerHeight - map_height)/2
 			$('#map').css("width",map_width+"px")
 			$('#map').css("height",map_height+"px")
 			$('#map').css("margin-top",margin_top+"px")
-			
 			// set socket on /dashboard
-	      	var socket = io(url+'/client');
-	      	// ---------------------------------------
-	      	// wait for connection
-	      	socket.on('connect', function() {
-	      		console.log('connect to the server')
-	      	});
-	      	// ---------------------------------------
-	      	socket.on('init-map', function(json) {
-	      		// user = new User().create(json.user).listenKeyboard().render()
-	      		// 
-	      		// bots.push(user)
-	      		
-	      		var matrix = json.map 
-	      		console.log(json.bots)
-
-	      		json.bots.forEach(function(bot){
-	      			if(bot.type == "user"){
-	      				bot = new User().create(bot).listenKeyboard().render()
-	      				bot.socket = socket
-	      				$("#user_id").html("user id :"+bot.id);
-	      				bots.push(bot)
-	      			}else if(bot.type == "bot"){
-	      				bot = new Bot().create(bot).render()	
-	      				bots.push(bot)
-	      			}
-	      			
-	      		})
-	      		var map = new Map()
-	      		map.init({
-	      			"map_width" : map_width,
-	      			"map_height" : map_height,
-	      			"matrix" : matrix
-	      		})
-	      		map.render()
-	        	// when link etablish with server on /dashboard socket update status of this dahoboard
-	        	
-	      	});
-	      	// ---------------------------------------
-	      	socket.on('bob-updated', function(bob) {
-	      		if(bob.type == "user") console.log('user moved')
-	      		// console.log("bob",bob.id,' : ',bob.orientation)
-	      		bots.forEach(function(bot){
-	      			if(bot.id == bob.id){
-	      				bot.update(bob)
-	      			}
-	      		})
-	      	});
-	      	// ---------------------------------------
-	      	socket.on('bob-added', function(bot){
-	      		console.log("new bob")
-	      		bots.push(new Bot().create(bot).render())
-	      	});
-	      	// ---------------------------------------
-	      	socket.on('bob-removed', function(bob){
-	      		console.log("bob removed")
-	      		var toRemove = {}
-	      		bots = _.filter(bots, function(bot) { 
-			      if(bot.id != bob.id) return bot;
-			      else bot.remove()
-			    });
-			    console.log(bots.length)
-	      		// find bob on bots array and call bob.remove()
-	      		// remove from array and remove form dom
-	      	});
-
-	      	
-
-
-	      	
+    	var socket = io(url+'/client')
+    	// ---------------------------------------
+    	// wait for connection
+    	socket.on('connect', function() {
+    		console.log('connect to the server')
+    	})
+    	// ---------------------------------------
+    	socket.on('init-map', function(json) {
+    		var matrix = json.map
+    		json.bots.forEach(function(bot){
+    			if(bot.type == "user"){
+    				bot = new User().create(bot).listenKeyboard().render()
+    				bot.socket = socket
+    				$("#user_id").html("user id :"+bot.id);
+    				bots.push(bot)
+    			}else if(bot.type == "bot"){
+    				bot = new Bot().create(bot).render()
+    				bots.push(bot)
+    			}
+    		})
+    		var map = new Map()
+    		map.init({
+    			"map_width" : map_width,
+    			"map_height" : map_height,
+    			"matrix" : matrix
+    		})
+    		map.render()
+    	})
+    	// ---------------------------------------
+    	socket.on('bob-updated', function(bob) {
+    		if(bob.type == "user") console.log('user moved')
+    		bots.forEach(function(bot){
+    			if(bot.id == bob.id){
+    				bot.update(bob)
+    			}
+    		})
+    	})
+    	// ---------------------------------------
+    	socket.on('bob-added', function(bot){
+    		bots.push(new Bot().create(bot).render())
+    	})
+    	// ---------------------------------------
+    	socket.on('bob-removed', function(bob){
+    		var toRemove = {}
+    		bots = _.filter(bots, function(bot) {
+		      if(bot.id != bob.id) return bot;
+		      else bot.remove()
+		    })
+    	})
 		</script>
 	</body>
 </html>

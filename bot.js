@@ -10,7 +10,7 @@ var exports = module.exports = function(){
 	this.orientation = "down"
 	this.bob_updated = {}
 	this.map = []
-	this.color = "green"
+	this.color = "#27ae60"
 	this.deplacement = ["down","right","up","left"]
 	this.type = "bot"
 	this.init = function(json){
@@ -36,7 +36,7 @@ var exports = module.exports = function(){
 				if(i>4) break;
 			}
 
-		},1000)
+		},100)
 		return this
 	}
 	// ------------------------------------------------
@@ -118,4 +118,3 @@ var exports = module.exports = function(){
 		}
 	}
 }
-
